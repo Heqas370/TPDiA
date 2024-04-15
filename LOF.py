@@ -6,13 +6,15 @@ import preprocessing
 
 def search_for_outliers():
 
-    signal_1, signal_2, signal_3 = preprocessing.pickDataset()
-    signal_1_AN, signal_2_AN, signal_3_AN = preprocessing.pickDataset()
+    signal_1, signal_2, signal_3 = preprocessing.pickDataset(0)
+    signal_1_AN, signal_2_AN, signal_3_AN = preprocessing.pickDataset(2)
 
-    X_train, _ = preprocessing.standarize(signal_1, signal_2, signal_3)
-    X_test, _ = preprocessing.standarize(signal_1_AN, signal_2_AN, signal_3_AN)
+    print(signal_1['BMS_Current'])
 
-    clf = LocalOutlierFactor(contamination=0.01, novelty=True, n_neighbors=250, metric='num_euclidean')
+    X_train = preprocessing.standarize(signal_1, signal_2, signal_3)
+    X_test = preprocessing.standarize(signal_1_AN, signal_2_AN, signal_3_AN)
+
+    clf = LocalOutlierFactor(contamination=0.01, novelty=True, n_neighbors=250, metric='nan_euclidean')
 
     clf.fit(X_train)
 
@@ -46,8 +48,8 @@ def test_with_metrics():
     signal_1, signal_2, signal_3 = preprocessing.pickDataset()
     signal_1_AN, signal_2_AN, signal_3_AN = preprocessing.pickDataset()
 
-    X_train, _ = preprocessing.standarize(signal_1, signal_2, signal_3)
-    X_test, _ = preprocessing.standarize(signal_1_AN, signal_2_AN, signal_3_AN)
+    X_train = preprocessing.standarize(signal_1, signal_2, signal_3)
+    X_test = preprocessing.standarize(signal_1_AN, signal_2_AN, signal_3_AN)
 
     contamination = 1/len(X_train)
 

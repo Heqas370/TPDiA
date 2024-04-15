@@ -12,7 +12,7 @@ def clasterization(epsVal, minSampleVal):
 
     BMS_Current_AN, BMS_Voltage_AN, BMS_Soc_AN = preprocessing.pickDataset(1)
 
-    X_test, _ = preprocessing.standarize(
+    X_test = preprocessing.standarize(
         BMS_Current_AN, BMS_Voltage_AN, BMS_Soc_AN)
     
     k = 2 * X_test.shape[-1] - 1
