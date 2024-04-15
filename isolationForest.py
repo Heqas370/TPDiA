@@ -93,4 +93,26 @@ def test_with_metrics():
                               n_estimators= 5000, max_samples= n, max_features= 1, bootstrap= False, verbose=1)
         clf.fit(X_train)
         y_pred = clf.predict(X_test)
-        accuracy_results.append(accuracy_score(BMS_Voltage_AN))
+        accuracy_results.append(accuracy_score(BMS_Voltage_AN)['isanomaly'], y_pred)
+        precision_results.append(precision_score(BMS_Voltage_AN)['isanomaly'], y_pred)
+        f1_score_results.append(f1_score(BMS_Voltage_AN['isanomaly'],y_pred))
+        recall_results.append(recall_score(BMS_Voltage_AN['isanomaly'],y_pred))
+
+    fig, (ax1, ax2, ax3, ax4) = plt.subplot(4, 1, figsize=(10, 12))
+    fig.suptittle('Performance Metrics')
+
+    ax1.plot(list(range(10, 200, 10)), accuracy_results)
+    ax1.set_ylabel('Accuracy')
+
+    ax2.plot(list(range(10, 200, 10)), precision_results)
+    ax2.set_ylabel('Precision')
+
+    ax3.plot(list(range(10, 200, 10)), f1_score_results)
+    ax3.set_ylabel('F1 Score')
+
+    ax4.plot(list(range(10, 200, 10)), recall_results)
+    ax4.set_ylabel('Recall')
+    ax4.set_xlabel('n_neighbours')
+
+    plt.tight_layout()
+    plt.show()
