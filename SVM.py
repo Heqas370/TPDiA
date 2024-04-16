@@ -1,43 +1,51 @@
 import matplotlib.pyplot as plt
-from sklearn.neighbors import LocalOutlierFactor
-import matplotlib
-import preprocessing
+from sklearn.svm import OneClassSVM
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
-
+import preprocessing
+from sklearn import model_selection
 
 def search_for_outliers(
         training_data: int,
-        testing_data: int):
+        testing_data: int
+):
 
-    signal_1, signal_2, signal_3 = preprocessing.pickDataset(training_data)
-    signal_1_AN, signal_2_AN, signal_3_AN = preprocessing.pickDataset(testing_data)
+    BMS_Current, BMS_Voltage, BMS_Soc = preprocessing.pickDataset(training_data)
+    BMS_Current_AN, BMS_Voltage_AN, BMS_Soc_AN = preprocessing.pickDataset(testing_data)
 
-    X_train = preprocessing.prepare_data(signal_1, signal_2, signal_3)
-    X_test = preprocessing.prepare_data(signal_1_AN, signal_2_AN, signal_3_AN)
+    X_train = preprocessing.prepare_data(BMS_Current, BMS_Voltage, BMS_Soc)
+    X_test = preprocessing.prepare_data(BMS_Current_AN, BMS_Voltage_AN, BMS_Soc_AN)
 
-    clf = LocalOutlierFactor(contamination=0.01, novelty=True, n_neighbors=250, metric='euclidean')
+    to_model_columns = X_train.columns[0:3]
+    clf = OneClassSVM(nu=1, kernel='rbf', gamma=0.01)
+    clf.fit(X_train[to_model_columns])
 
-    clf.fit(X_train)
-
-    y_pred = clf.predict(X_test)
-
-    X_test['anomaly'] = y_pred
-    print(X_test['anomaly'].value_counts)
-
+    X_test['scores'] = clf.decision_function(X_test)
+    y_pred = clf.predict(X_test[to_model_columns])
     X_test['anomaly'] = y_pred
 
+    anomaly = X_test.loc[X_test['anomaly']== -1]
+    print(anomaly)
+
+    print(X_test['anomaly'].value_counts())
+
+    X_test['anomaly'] = y_pred
+
+    #Plotting anomalies
     plt.scatter(X_test.index, X_test['anomaly'], c=X_test['anomaly'], cmap='viridis')
     plt.xlabel('Index')
     plt.ylabel('Anomaly Score')
-    plt.title('Anomalies detected by Isolation Forest')
-    plt.colorbar(label = 'Anoamly Score')
+    plt.title('Anomalies Detected by Isolation Forest')
+    plt.colorbar(label= 'Anomaly Score')
     plt.show()
 
-    plt.figure(figsize=(12, 6))
-    plt.plot(X_test.index, signal_1['BMS_Voltage'], label ='Voltage Data')
-    plt.scatter(X_test.index, X_test['BMS_Voltage'], c=X_test['anomaly'], cmap='virdis', label='Anomalies')
+    #Plot timeseries data with anomalies
+
+    plt.figure(figsize=(12,6))
+    plt.plot(X_test.index, X_test['BMS_Voltage'], label='Voltage Data')
+    plt.scatter(X_test.index, X_test['BMS_Voltage'], c=X_test['anomaly'], cmap='Viridis', label='Anomalies')
     plt.xlabel('Time')
     plt.ylabel('Voltage')
+    plt.title('Voltage Time Series with Anomalies Detected by Isolation Forest')
     plt.colorbar(label='Anomaly Score')
     plt.legend()
     plt.show()
@@ -59,7 +67,7 @@ def test_with_metrics(
     X_test = preprocessing.prepare_data(BMS_Current_AN, BMS_Voltage_AN, BMS_Soc_AN)
 
     for n in range(testing_range[0], testing_range[1], testing_range[2]):
-        clf = LocalOutlierFactor(contamination=0.01, novelty=True, n_neighbors=n, metric='euclidean')
+        clf = OneClassSVM(nu=n, kernel='rbf', gamma=0.01)
 
         clf.fit(X_train)
         y_pred = clf.predict(X_test)
@@ -88,7 +96,5 @@ def test_with_metrics(
     plt.show()
 
 
-if __name__ == "__main__":
-
-    matplotlib.use('TKAgg')
-    search_for_outliers(0, 2)
+if __name__=="__main__":
+    search_for_outliers(0,2)

@@ -2,18 +2,17 @@ import matplotlib.pyplot as plt
 from sklearn.ensemble import IsolationForest
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 import preprocessing
-import matplotlib
-from sklearn.decomposition import PCA
-import pandas as pd
-import numpy as np
 from sklearn import model_selection
 
-def tune_parameters():
-    BMS_Current, BMS_Voltage, BMS_Soc = preprocessing.pickDataset(0)
-    BMS_Current_AN, BMS_Voltage_AN, BMS_Soc_AN = preprocessing.pickDataset(2)
+def tune_parameters(
+        training_data: int,
+        testing_data: int):
 
-    X_train, _ = preprocessing.standarize(BMS_Current, BMS_Voltage, BMS_Soc)
-    X_test, _ = preprocessing.standarize(BMS_Current_AN, BMS_Voltage_AN, BMS_Soc_AN)
+    BMS_Current, BMS_Voltage, BMS_Soc = preprocessing.pickDataset(training_data)
+    BMS_Current_AN, BMS_Voltage_AN, BMS_Soc_AN = preprocessing.pickDataset(testing_data)
+
+    X_train = preprocessing.prepare_data(BMS_Current, BMS_Voltage, BMS_Soc)
+    X_test = preprocessing.prepare_data(BMS_Current_AN, BMS_Voltage_AN, BMS_Soc_AN)
 
     clf = IsolationForest()
 
@@ -30,13 +29,16 @@ def tune_parameters():
     grid_dt_estimator.fit(X_test, y= BMS_Voltage_AN['is_anomaly'])
     print(grid_dt_estimator.best_params_)
 
-def search_for_outliers():
+def search_for_outliers(
+        training_data: int,
+        testing_data: int
+):
 
-    BMS_Current, BMS_Voltage, BMS_Soc = preprocessing.pickDataset(1)
-    BMS_Current_AN, BMS_Voltage_AN, BMS_Soc_AN = preprocessing.pickDataset(1)
+    BMS_Current, BMS_Voltage, BMS_Soc = preprocessing.pickDataset(training_data)
+    BMS_Current_AN, BMS_Voltage_AN, BMS_Soc_AN = preprocessing.pickDataset(testing_data)
 
-    X_train, _ = preprocessing.standarize(BMS_Current, BMS_Voltage, BMS_Soc)
-    X_test, _ = preprocessing.standarize(BMS_Current_AN, BMS_Voltage_AN, BMS_Soc_AN)
+    X_train = preprocessing.prepare_data(BMS_Current, BMS_Voltage, BMS_Soc)
+    X_test = preprocessing.prepare_data(BMS_Current_AN, BMS_Voltage_AN, BMS_Soc_AN)
 
     to_model_columns = X_train.columns[0:3]
     clf = IsolationForest(contamination= 0.002, random_state=10, n_estimators=7000, max_samples=5000, max_features=3,
@@ -51,7 +53,6 @@ def search_for_outliers():
     print(anomaly)
 
     outliers = X_test.loc[X_test['anomaly']== -1]
-    outlier_index = list(outliers.index)
     print(X_test['anomaly'].value_counts())
 
     X_test['anomaly'] = y_pred
@@ -76,19 +77,23 @@ def search_for_outliers():
     plt.legend()
     plt.show()
 
-def test_with_metrics():
+def test_with_metrics(
+        training_data: int,
+        testing_data: int,
+        testing_range: list):
+
     accuracy_results = []
     precision_results = []
     recall_results = []
     f1_score_results = []
 
-    BMS_Current, BMS_Voltage, BMS_Soc = preprocessing.pickDataset(0)
-    BMS_Current_AN, BMS_Voltage_AN, BMS_Soc_AN = preprocessing.pickDataset(2)
+    BMS_Current, BMS_Voltage, BMS_Soc = preprocessing.pickDataset(training_data)
+    BMS_Current_AN, BMS_Voltage_AN, BMS_Soc_AN = preprocessing.pickDataset(testing_data)
 
-    X_train, _ = preprocessing.standarize(BMS_Current, BMS_Voltage, BMS_Soc)
-    X_test, _ = preprocessing.standarize(BMS_Current_AN, BMS_Voltage_AN, BMS_Soc_AN)
+    X_train = preprocessing.prepare_data(BMS_Current, BMS_Voltage, BMS_Soc)
+    X_test = preprocessing.prepare_data(BMS_Current_AN, BMS_Voltage_AN, BMS_Soc_AN)
 
-    for n in range(10, 200, 10):
+    for n in range(testing_range[0], testing_range[1], testing_range[2]):
         clf = IsolationForest(contamination=0.008, random_state= 300,
                               n_estimators= 5000, max_samples= n, max_features= 1, bootstrap= False, verbose=1)
         clf.fit(X_train)
@@ -101,18 +106,22 @@ def test_with_metrics():
     fig, (ax1, ax2, ax3, ax4) = plt.subplot(4, 1, figsize=(10, 12))
     fig.suptittle('Performance Metrics')
 
-    ax1.plot(list(range(10, 200, 10)), accuracy_results)
+    ax1.plot(list(range(testing_range[0], testing_range[1], testing_range[2])), accuracy_results)
     ax1.set_ylabel('Accuracy')
 
-    ax2.plot(list(range(10, 200, 10)), precision_results)
+    ax2.plot(list(range(testing_range[0], testing_range[1], testing_range[2])), precision_results)
     ax2.set_ylabel('Precision')
 
-    ax3.plot(list(range(10, 200, 10)), f1_score_results)
+    ax3.plot(list(range(testing_range[0], testing_range[1], testing_range[2])), f1_score_results)
     ax3.set_ylabel('F1 Score')
 
-    ax4.plot(list(range(10, 200, 10)), recall_results)
+    ax4.plot(list(range(testing_range[0], testing_range[1], testing_range[2])), recall_results)
     ax4.set_ylabel('Recall')
     ax4.set_xlabel('n_neighbours')
 
     plt.tight_layout()
     plt.show()
+
+
+if __name__=="__main__":
+    search_for_outliers(0,2)

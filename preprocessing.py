@@ -71,7 +71,7 @@ def pickDataset(dataset):
     return signal_1, signal_2, signal_3
 
 
-def standarize(signal_1, signal_2, signal_3):
+def prepare_data(signal_1, signal_2, signal_3):
     
     input_data = pd.concat((signal_1['BMS_Current'], signal_2['BMS_Voltage'], signal_3['BMS_SOC']), axis=1)
 
