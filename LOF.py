@@ -15,16 +15,16 @@ def search_for_outliers(
     X_train = preprocessing.prepare_data(signal_1, signal_2, signal_3)
     X_test = preprocessing.prepare_data(signal_1_AN, signal_2_AN, signal_3_AN)
 
-    clf = LocalOutlierFactor(contamination=0.01, novelty=True, n_neighbors=250, metric='euclidean')
+    clf = LocalOutlierFactor(contamination=0.0002, novelty=True, n_neighbors=500, metric='euclidean')
 
     clf.fit(X_train)
 
     y_pred = clf.predict(X_test)
 
     X_test['anomaly'] = y_pred
-    print(X_test['anomaly'].value_counts)
 
-    X_test['anomaly'] = y_pred
+    anomaly = X_test.loc[X_test['anomaly']== -1]
+    print(anomaly)
 
     plt.scatter(X_test.index, X_test['anomaly'], c=X_test['anomaly'], cmap='viridis')
     plt.xlabel('Index')
@@ -34,8 +34,8 @@ def search_for_outliers(
     plt.show()
 
     plt.figure(figsize=(12, 6))
-    plt.plot(X_test.index, signal_1['BMS_Voltage'], label ='Voltage Data')
-    plt.scatter(X_test.index, X_test['BMS_Voltage'], c=X_test['anomaly'], cmap='virdis', label='Anomalies')
+    plt.plot(X_test.index, X_test['BMS_Voltage'], label ='Voltage Data')
+    plt.scatter(X_test.index, X_test['BMS_Voltage'], c=X_test['anomaly'], cmap='viridis', label='Anomalies')
     plt.xlabel('Time')
     plt.ylabel('Voltage')
     plt.colorbar(label='Anomaly Score')
@@ -91,4 +91,4 @@ def test_with_metrics(
 if __name__ == "__main__":
 
     matplotlib.use('TKAgg')
-    search_for_outliers(0, 2)
+    search_for_outliers(0, 6)

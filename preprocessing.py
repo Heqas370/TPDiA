@@ -15,58 +15,52 @@ def pickDataset(dataset):
             signal_3 =  pd.read_csv("data/signal3_drive2.csv")
 
         case 2:
-            ### standard drive number 1
-            signal_1 =  pd.read_csv("data/signal1_drive1.csv")
-            signal_2 =  pd.read_csv("data/signal2_drive1_case1.csv")
-            signal_3 =  pd.read_csv("data/signal3_drive1.csv")
-
-        case 3:
             ### Anomaly signal 2 case 1 drive 1
             signal_1 =  pd.read_csv("data/signal1_drive1.csv")
             signal_2 =  pd.read_csv("data/signal2_drive1_case1.csv")
             signal_3 =  pd.read_csv("data/signal3_drive1.csv")
 
-        case 4:
+        case 3:
             ### Anomaly signal 2 case 2 drive 1
             signal_1 =  pd.read_csv("data/signal1_drive1.csv")
             signal_2 =  pd.read_csv("data/signal2_drive1_case2.csv")
             signal_3 =  pd.read_csv("data/signal3_drive1.csv")
 
-        case 5:
+        case 4:
             ### Anomaly signal 2 case 3 drive 1
             signal_1 =  pd.read_csv("data/signal1_drive1.csv")
-            signal_2 =  pd.read_csv("data/signal2_drive1_case3.csv")
+            signal_2 =  pd.read_csv("data/signal2_drive1_case2.csv")
             signal_3 =  pd.read_csv("data/signal3_drive1.csv")
 
-        case 6:
+        case 5:
             ### Anomaly signal 2 case 1 drive 2
             signal_1 =  pd.read_csv("data/signal1_drive2.csv")
             signal_2 =  pd.read_csv("data/signal2_drive2_case1.csv")
             signal_3 =  pd.read_csv("data/signal3_drive2.csv")
         
-        case 7:
+        case 6:
             ### Anomaly signal 2 case 2 drive 2
             signal_1 =  pd.read_csv("data/signal1_drive2.csv")
             signal_2 =  pd.read_csv("data/signal2_drive2_case2.csv")
             signal_3 =  pd.read_csv("data/signal3_drive2.csv")
 
-        case 8:
+        case 7:
             ### Anomaly signal 2 case 3 drive 2
             signal_1 =  pd.read_csv("data/signal1_drive2.csv")
-            signal_2 =  pd.read_csv("data/signal2_drive2_case2.csv")
+            signal_2 =  pd.read_csv("data/signal2_drive2_case3.csv")
             signal_3 =  pd.read_csv("data/signal3_drive2.csv")
 
-        case 9:
+        case 8:
             ### Anomaly signal 3 case 1 drive 1
             signal_1 =  pd.read_csv("data/signal1_drive1.csv")
             signal_2 =  pd.read_csv("data/signal2_drive1.csv")
             signal_3 =  pd.read_csv("data/signal3_drive1_case1.csv")
 
-        case 10:
+        case 9:
             ### Anomaly signal 2 case 3 drive 2
-            signal_1 =  pd.read_csv("data/signal1_drive2.csv")
-            signal_2 =  pd.read_csv("data/signal2_drive2.csv")
-            signal_3 =  pd.read_csv("data/signal3_drive2_case1.csv")
+            signal_1 =  pd.read_csv("data/signal1_drive1.csv")
+            signal_2 =  pd.read_csv("data/signal2_drive1.csv")
+            signal_3 =  pd.read_csv("data/signal3_drive1_case2.csv")
 
     return signal_1, signal_2, signal_3
 

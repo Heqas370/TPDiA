@@ -69,7 +69,7 @@ def search_for_outliers(
 
     plt.figure(figsize=(12,6))
     plt.plot(X_test.index, X_test['BMS_Voltage'], label='Voltage Data')
-    plt.scatter(X_test.index, X_test['BMS_Voltage'], c=X_test['anomaly'], cmap='Viridis', label='Anomalies')
+    plt.scatter(X_test.index, X_test['BMS_Voltage'], c=X_test['anomaly'], cmap='viridis', label='Anomalies')
     plt.xlabel('Time')
     plt.ylabel('Voltage')
     plt.title('Voltage Time Series with Anomalies Detected by Isolation Forest')
@@ -124,4 +124,4 @@ def test_with_metrics(
 
 
 if __name__=="__main__":
-    search_for_outliers(0,2)
+    search_for_outliers(0,3)
