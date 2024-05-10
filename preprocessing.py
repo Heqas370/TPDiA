@@ -67,12 +67,22 @@ def pickDataset(dataset):
 
 def prepare_data(signal_1, signal_2, signal_3):
     
-    input_data = pd.concat((signal_1['BMS_Current'], signal_2['BMS_Voltage'], signal_3['BMS_SOC']), axis=1)
+    input_data = pd.concat((signal_1['BMS_SOC'], signal_2['BMS_Voltage'], signal_3['BMS_Current']), axis=1)
 
     data = input_data.dropna()
     dataset = pd.DataFrame(data.values, columns = data.columns, index = data.index)
 
     return dataset
 
-                          
+def row_corelation(df1,df2):
+
+    signal_1 = abs(df1.values)
+    signal_2 = abs(df2.values)
+    result = signal_1 - signal_2
+
+    result_df = pd.DataFrame(result,columns=['result_signal'])
+
+    result_df.index = df1.index
+
+    return result_df                  
      
