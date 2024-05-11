@@ -86,3 +86,8 @@ def row_corelation(df1,df2):
 
     return result_df                  
      
+def derivate(dataframe, drop_value):
+    derivate = (dataframe.diff(drop_value) / dataframe.index_to_series().diff(drop_value).dt.total_seconds()).dropna()
+    derivate.index = dataframe.index[0: -drop_value]
+
+    return derivate
