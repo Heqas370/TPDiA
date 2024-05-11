@@ -9,7 +9,7 @@ def tune_parameters(
         training_data: int,
         testing_data: int):
 
-    corr_train, corr_test, X_test, Time, y_true = feature_extraction.correlation_extraction(training_data, testing_data)
+    _, corr_test, _, _, y_true = feature_extraction.correlation_extraction(training_data, testing_data)
 
     clf = IsolationForest()
 
@@ -34,12 +34,11 @@ def search_for_outliers(
     corr_train, corr_test, X_test, Time, y_true = feature_extraction.correlation_extraction(training_data, testing_data)
 
     ### Training and testing
-    clf = IsolationForest(contamination= 0.002, random_state=10, n_estimators=7000, max_samples=5000, max_features=3,
+    clf = IsolationForest(contamination= 0.002, random_state=10, n_estimators=7000, max_samples=5000,
                            bootstrap=True, verbose=2)
 
     clf.fit(corr_train)
-    X_test['scores'] = clf.decision_function(corr_test)
-    y_pred = clf.predict(X_test)
+    y_pred = clf.predict(corr_test)
     X_test['anomaly'] = y_pred
     print(X_test['anomaly'].value_counts())
 
@@ -70,7 +69,8 @@ def test_with_metrics(
 
         f1_score_results.append(f1_score(y_true,y_pred))
 
-    visualization.plot_F1_score(f1_score,[1000,2000,3000,4000,5000])
+    visualization.plot_F1_score(f1_score_results,[1000,2000,3000,4000])
 
 if __name__=="__main__":
     search_for_outliers(0,3)
+    test_with_metrics(0,3,[1000,5000,1000], 'max_samples')

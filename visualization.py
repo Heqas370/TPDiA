@@ -8,7 +8,7 @@ def plot_F1_score(f1_score, range, test_param):
     plt.title("Performance Metric")
     plt.plot(range, f1_score)
     plt.ylabel('F1 score')
-    plt.xlabel(f'{test_param}')
+    plt.xlabel(test_param)
 
     plt.tight_layout()
     plt.show()
@@ -20,7 +20,7 @@ def plot_ROC_curve(y_true, y_pred):
 
     plt.figure()
     plt.plot(fpr, tpr, color='darkorange', lw=2, label='ROC curve (area = %0.2f)'% roc_auc)
-    plt.plot([0, 1], [0, 1], color='nay', lw=2, linestyle='--')
+    plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
     plt.xlim([0.0, 1.0])
     plt.ylim([0.0, 1.05])
     plt.xlabel('False Positive Rate')

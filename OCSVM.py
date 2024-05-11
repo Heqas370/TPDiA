@@ -13,7 +13,6 @@ def search_for_outliers(
     clf = OneClassSVM(nu=1, kernel='rbf', gamma=0.01)
     clf.fit(corr_train)
 
-    X_test['scores'] = clf.decision_function(X_test)
     y_pred = clf.predict(corr_test)
     X_test['anomaly'] = y_pred
 
